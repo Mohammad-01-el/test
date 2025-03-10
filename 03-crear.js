@@ -9,15 +9,47 @@ const assert = require('assert');
 class MyTest extends BaseTest
 {
 	async test() {
-        // testejem H1 a la home page
+        // Login test
         //////////////////////////////////////////////////////
-        await this.driver.get("https://emieza.ieti.site/admin/login/");
-        var currentText = await this.driver.findElement(By.tagName("h1")).getText();
-        var expectedText = "Tasklist";
-        assert( currentText==expectedText, "Títol H1 de la pàgina principal incorrecte");
+        var site = process.env.URL;
+        await this.driver.get(site+"/admin/login");
+
+        //1 cercar login box
+        let usernameInput = await this.driver.wait(until.elementLocated(By.id('id_username')), 10000);
+        let passwordInput = await this.driver.wait(until.elementLocated(By.id('id_password')), 10000);
+       
+        //2 posar usuari i pass
+        usernameInput.sendKeys(process.env.usuari);
+        passwordInput.sendKeys(process.env.contrasenya);
+
+        
+        //3 boto send .click()
+        let sendButton = await this.driver.wait(until.elementLocated(By.css('input[value="Iniciar sessió"]')), 10000);
+        sendButton.click();
+
+
+        //5 click en afegir llibre
+        let trLLibres = await this.driver.wait(until.elementLocated(By.xpath('//a[@href="/admin/biblio/llibre/add/"]')), 10000);
+        trLLibres.click();
+
+
+        //6 escriure títol
+        let titolInput = await this.driver.wait(until.elementLocated(By.id('id_titol')), 10000);
+        titolInput.sendKeys("Mar");
+
+        //7 click en DESAR
+        let saveButton = await this.driver.wait(
+            until.elementLocated(By.xpath('//input[@type="submit" and @value="Desar"]')),
+            15000
+        );
+        saveButton.click();
+
+
+
 
         console.log("TEST OK");
 	}
+}
 }
 
 // executem el test
