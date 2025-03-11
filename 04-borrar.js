@@ -9,13 +9,55 @@ const assert = require('assert');
 class MyTest extends BaseTest
 {
 	async test() {
-        // testejem H1 a la home page
+        // Login test
         //////////////////////////////////////////////////////
-        await this.driver.get("https://emieza.ieti.site/admin/login/");
-        var currentText = await this.driver.findElement(By.tagName("h1")).getText();
-        var expectedText = "Tasklist";
-        assert( currentText==expectedText, "Títol H1 de la pàgina principal incorrecte");
+        var site = process.env.URL;
+        await this.driver.get(site+"/admin/login");
 
+        //1 cercar login box
+        let usernameInput = await this.driver.wait(until.elementLocated(By.id('id_username')), 10000);
+        let passwordInput = await this.driver.wait(until.elementLocated(By.id('id_password')), 10000);
+       
+        //2 posar usuari i pass
+        usernameInput.sendKeys(process.env.usuari);
+        passwordInput.sendKeys(process.env.contrasenya);
+
+        
+        //3 boto send .click()
+        let sendButton = await this.driver.wait(until.elementLocated(By.css('input[value="Iniciar sessió"]')), 10000);
+        sendButton.click();
+
+
+        //4 entrar en Llibres
+        let linkLlibres = await this.driver.wait(until.elementLocated(By.xpath('//a[@href="/admin/biblio/llibre/"]')), 10000);
+        linkLlibres.click();
+
+        
+        //5 entrar al meu llibre i el link
+        const row = await this.driver.wait(
+            until.elementLocated(By.xpath("//tr[contains(., 'Mar Melich')]")),
+            10000
+        );
+
+        const linkRow = await row.findElement(By.css('a'));
+        await linkRow.click();
+
+
+
+        //6 click en Esborrar
+        let deleteButton = await this.driver.wait(
+            until.elementLocated(By.css('a.deletelink')),
+            15000
+        );
+        
+        deleteButton.click();
+
+        //7 click en estic segur
+        let confirmButton = await this.driver.wait(
+            until.elementLocated(By.xpath('//input[@type="submit" and @value="Sí, n\'estic segur"]')),
+            15000
+        );
+        confirmButton.click();
         console.log("TEST OK");
 	}
 }
