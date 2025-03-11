@@ -3,10 +3,8 @@ const { BaseTest } = require("./BaseTest.js")
 const { By, until } = require("selenium-webdriver");
 const assert = require('assert');
 require("dotenv").config();
-console.log(process.env); //printa totes les variable d'entorn
+console.log(process.env); 
 
-// heredem una classe amb un sol mètode test()
-// emprem this.driver per utilitzar Selenium
 
 class MyTest extends BaseTest
 {
